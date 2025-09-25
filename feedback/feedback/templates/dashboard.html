@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Student Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #9face6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 8px 20px rgba(0,0,0,0.2);
+      width: 400px;
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+    .container h2 {
+      margin-bottom: 15px;
+      color: #2c3e50;
+    }
+    .container p {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 20px;
+    }
+    .messages {
+      margin-bottom: 15px;
+    }
+    .messages .success {
+      color: green;
+      font-weight: bold;
+    }
+    .messages .error {
+      color: red;
+      font-weight: bold;
+    }
+    a {
+      display: block;
+      text-decoration: none;
+      background: #5dd1ee;
+      color: white;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 8px;
+      transition: 0.3s;
+      font-weight: bold;
+    }
+    a:hover {
+      background: #41e1b9;
+    }
+
+    /* Small fade animation */
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: translateY(-20px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🎓 Welcome, {{ request.user.rollno }}</h2>
+    <p>You are logged in successfully.</p>
+
+    <!-- ✅ Django Messages -->
+    <div class="messages">
+      {% if messages %}
+        {% for message in messages %}
+          <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <a href="{% url 'feedback' %}">✍️ Give Feedback</a>
+    <a href="{% url 'change_password' %}">🔑 Change Password</a>
+    <a href="{% url 'logout' %}">🚪 Logout</a>
+  </div>
+</body>
+</html>

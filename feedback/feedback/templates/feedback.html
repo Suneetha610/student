@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Course Feedback</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #89f7fe, #66a6ff);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px 40px;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+      width: 420px;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-bottom: 20px;
+    }
+    .form-group { margin-bottom: 20px; }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+    input[type="text"], textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+      box-sizing: border-box;
+      transition: 0.3s;
+    }
+    input:focus, textarea:focus {
+      border-color: #66a6ff;
+      outline: none;
+      box-shadow: 0px 0px 6px rgba(102,166,255,0.5);
+    }
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: #4a90e2;
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button[type="submit"]:hover { background: #357ab8; }
+    .options { display: flex; justify-content: space-between; margin-top: 8px; }
+    .options label {
+      flex: 1;
+      text-align: center;
+      background: #f1f1f1;
+      margin: 5px;
+      padding: 10px 0;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 1px solid transparent;
+    }
+    .options input[type="radio"] { display: none; }
+    .options input[type="radio"]:checked + label {
+      background: #4ae2ce;
+      color: white;
+      font-weight: bold;
+      border-color: #35b8a0;
+    }
+    .messages { text-align: center; margin-bottom: 15px; }
+    .messages .success { color: green; font-weight: bold; }
+    .messages .error { color: red; font-weight: bold; }
+    .back-link {
+      display: block;
+      margin-top: 15px;
+      text-align: center;
+      text-decoration: none;
+      color: #4ae2cb;
+      font-weight: bold;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Course Feedback Form</h2>
+
+    <!-- ✅ Django Messages -->
+    <div class="messages">
+      {% if messages %}
+        {% for message in messages %}
+          <p class="{{ message.tags }}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <form method="POST">
+      {% csrf_token %}
+
+      <!-- Course Name -->
+      <div class="form-group">
+        <label for="course">Course Name</label>
+        <input type="text" name="course" id="course" required>
+      </div>
+
+      <!-- Lecturer Name -->
+      <div class="form-group">
+        <label for="lecturer">Lecturer Name</label>
+        <input type="text" name="lecturer" id="lecturer" required>
+      </div>
+
+      <!-- Overall Rating -->
+      <div class="form-group">
+        <label>Overall Rating</label>
+        <div class="options">
+          <input type="radio" id="excellent" name="rating" value="excellent" required>
+          <label for="excellent">Excellent</label>
+
+          <input type="radio" id="good" name="rating" value="good">
+          <label for="good">Good</label>
+
+          <input type="radio" id="average" name="rating" value="average">
+          <label for="average">Average</label>
+
+          <input type="radio" id="poor" name="rating" value="poor">
+          <label for="poor">Poor</label>
+        </div>
+      </div>
+
+      <!-- Feedback Text -->
+      <div class="form-group">
+        <label for="feedback_text">Additional Comments</label>
+        <textarea name="feedback_text" id="feedback_text" placeholder="Write your feedback..."></textarea>
+      </div>
+
+      <button type="submit">Submit Feedback</button>
+    </form>
+
+    <!-- Back to Dashboard -->
+    <a href="{% url 'dashboard' %}" class="back-link">⬅ Back to Dashboard</a>
+  </div>
+</body>
+</html>
