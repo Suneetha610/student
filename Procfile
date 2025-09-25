@@ -1,1 +1,2 @@
-web: gunicorn feedback.wsgi:application
+web: gunicorn --chdir /opt/render/project/src feedback.wsgi:application
+
