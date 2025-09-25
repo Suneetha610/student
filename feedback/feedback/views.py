@@ -26,38 +26,27 @@ def student_register(request):
         return redirect("dashboard")
 
     if request.method == "POST":
-        email = request.POST.get("email")
-
-        if Student.objects.filter(email=email).exists():
-            messages.error(request, "This email is already registered. Please login.")
+        form = StudentRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Registration successful! Please login.")
             return redirect("login")
+    else:
+        form = StudentRegistrationForm()
 
-        # create user with empty password (forces forgot-password flow)
-        student = Student.objects.create_user(
-            rollno=email,   # using email as rollno
-            email=email,
-            password=None
-        )
-        student.is_active = True
-        student.save()
-
-        messages.success(
-            request,
-            "Registration successful! Please use 'Forgot Password' to set your password."
-        )
-        return redirect("login")
-
-    return render(request, "register.html")
+    return render(request, "register.html", {"form": form})
 
 
 # 🔹 Student Login
 def student_login(request):
+    if request.user.is_authenticated:
+        return redirect("dashboard")
+
     if request.method == "POST":
         rollno = request.POST.get("username")
         password = request.POST.get("password")
 
         user = authenticate(request, username=rollno, password=password)
-
         if user is not None:
             login(request, user)
             return redirect("dashboard")
@@ -82,7 +71,8 @@ def feedback(request):
         if form.is_valid():
             Feedback.objects.create(
                 student=request.user,
-                lecturer=request.POST.get("lecturer"),  # comes from template
+                course=request.POST.get("course"),
+                lecturer=request.POST.get("lecturer"),
                 feedback_text=form.cleaned_data["feedback_text"],
                 rating=form.cleaned_data["rating"],
             )
@@ -124,7 +114,6 @@ def forgot_password(request):
             "uid": uid,
             "token": token,
             "domain": domain,
-            "year": 2025,
         })
 
         email_message = EmailMultiAlternatives(
@@ -186,13 +175,14 @@ def change_password(request):
         else:
             request.user.set_password(new)
             request.user.save()
-            messages.success(request, "Password updated successfully")
-            return redirect("change_success")
+            messages.success(request, "Password updated successfully. Please login again.")
+            logout(request)  # logout after password change
+            return redirect("login")
 
     return render(request, "change_password.html", {"form": form})
 
 
-# 🔹 Change Success
+# 🔹 Change Success (optional page)
 def change_success(request):
     return render(request, "change_success.html")
 
